@@ -21,7 +21,7 @@ public class Token_Resource {
         this.service = service;
     }
     @GetMapping("/")
-    public void PathVar(@RequestParam("code") String code , @RequestParam("state") String state){
+    public void PathVar(@RequestParam("code") String code , @RequestParam("state") String state) throws IOException {
         var request =  new Token_Request(code , state);
         System.out.println("PEGUEI AS VARAIVEIS " + request.getCode() +  "  espacinho   " + request.getState() );
 

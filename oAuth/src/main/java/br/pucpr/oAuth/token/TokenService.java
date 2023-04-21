@@ -27,12 +27,12 @@ public class TokenService {
     public static Properties getProp() throws IOException {
 		Properties props = new Properties();
 		FileInputStream file = new FileInputStream(
-				"./properties/token.properties");
+				"D:\\PUC\\JV\\oauth2-authorization-code-flow\\oAuth\\src\\main\\resources\\token.properties");
 		props.load(file);
 		return props;
 
 	}
-    public Token_Response RequestToken(Token_Request credentials) {
+    public Token_Response RequestToken(Token_Request credentials) throws IOException {
 
         var api = new RestTemplate();
         var uri = new DefaultUriBuilderFactory().builder()
@@ -40,8 +40,8 @@ public class TokenService {
                 .path("login/oauth/access_token")
                 .build();
         Properties prop = getProp();
-        secret = prop.getProperty("token.client.secret");
-		clientid = prop.getProperty("token.client.id");
+        String secret = prop.getProperty("token.client.secret");
+		String clientid = prop.getProperty("token.client.id");
         var header = new HttpHeaders();
         header.add("Content-Type", "application/json");
         header.add("Accept", "application/json");
