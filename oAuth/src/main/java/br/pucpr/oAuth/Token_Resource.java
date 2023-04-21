@@ -30,7 +30,7 @@ public class Token_Resource {
         System.out.println(response.getAccess_token());
     }
 
-    @GetMapping("/auth")
+    @GetMapping("/emails")
     public void ShowsEmais() throws IOException {
 
         String response = service.getemails(acess_token);
