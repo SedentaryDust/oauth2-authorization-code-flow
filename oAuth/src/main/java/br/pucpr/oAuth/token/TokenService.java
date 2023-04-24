@@ -2,6 +2,7 @@ package br.pucpr.oAuth.token;
 
 import br.pucpr.oAuth.Token_Resource;
 import com.fasterxml.jackson.annotation.JsonAlias;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpEntity;
@@ -15,6 +16,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import java.io.FileInputStream;
@@ -24,14 +27,20 @@ import java.util.Properties;
 @Service
 public class TokenService {
 
-    public static Properties getProp() throws IOException {
-		Properties props = new Properties();
-		FileInputStream file = new FileInputStream(
-				"D:\\PUC\\JV\\oauth2-authorization-code-flow\\oAuth\\src\\main\\resources\\token.properties");
-		props.load(file);
-		return props;
+    private List<String> code_chalenge = new ArrayList<>();
+    private List<String> code_verifier = new ArrayList<>();
+    private List<String> state_verifier = new ArrayList<>();
 
-	}
+    private String acess_token = "hey";
+
+    public static Properties getProp() throws IOException {
+        Properties props = new Properties();
+        FileInputStream file = new FileInputStream(
+                "D:\\PUC\\JV\\oauth2-authorization-code-flow\\oAuth\\src\\main\\resources\\token.properties");
+        props.load(file);
+        return props;
+
+    }
     public Token_Response RequestToken(Token_Request credentials) throws IOException {
 
         var api = new RestTemplate();
@@ -41,7 +50,7 @@ public class TokenService {
                 .build();
         Properties prop = getProp();
         String secret = prop.getProperty("token.client.secret");
-		String clientid = prop.getProperty("token.client.id");
+        String clientid = prop.getProperty("token.client.id");
         var header = new HttpHeaders();
         header.add("Content-Type", "application/json");
         header.add("Accept", "application/json");
@@ -76,5 +85,14 @@ public class TokenService {
         System.out.println(response);
         return response;
 
+    }
+
+    public String authcode(Token_Request request){
+        var code = request.code;
+        code_verifier.add(code);
+        state_verifier.add(request.state);
+        String sha256hex = DigestUtils.sha256Hex(code);
+        System.out.println(sha256hex);
+        return  acess_token;
     }
 }
