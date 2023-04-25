@@ -68,6 +68,15 @@ public class TokenService {
         return response.getStatusCode().is2xxSuccessful() ? response.getBody(): null;
     }
 
+    public static String randomString(int length) {
+        String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder output = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            int randomIndex = (int) (Math.random() * alphabet.length());
+            output.append(alphabet.charAt(randomIndex));
+        }
+        return output.toString();
+    }
     public String getemails(String token) throws IOException {
         URL url = new URL("https://api.github.com/user/emails");
         HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
@@ -87,12 +96,20 @@ public class TokenService {
 
     }
 
-    public String authcode(Token_Request request){
+    public String authrequest(Token_Request request){
         var code = request.code;
         code_verifier.add(code);
         state_verifier.add(request.state);
         String sha256hex = DigestUtils.sha256Hex(code);
+        code_chalenge.add(sha256hex);
         System.out.println(sha256hex);
         return  acess_token;
+    }
+
+    public String authcode(AuthorizationToken token){
+        if( code_chalenge.contains(token.getChallengeString())){
+            return  "AcessToken";
+        }
+        return null;
     }
 }

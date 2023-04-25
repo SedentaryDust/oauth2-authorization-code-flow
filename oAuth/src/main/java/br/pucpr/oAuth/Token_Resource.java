@@ -1,6 +1,7 @@
 package br.pucpr.oAuth;
 
 
+import br.pucpr.oAuth.token.AuthorizationToken;
 import br.pucpr.oAuth.token.TokenService;
 import br.pucpr.oAuth.token.Token_Request;
 import br.pucpr.oAuth.token.Token_Response;
@@ -24,14 +25,18 @@ public class Token_Resource {
     }
     @PostMapping("/")
     public String PathVar(@Valid @RequestBody Token_Request request) {
-        return service.authcode(request);
+        return service.authrequest(request);
 
     }
 
-    @GetMapping("/emails")
-    public void ShowsEmais() throws IOException {
+    @GetMapping("/generate_code")
+    public String CodeGenerator() throws IOException {
 
-        String response = service.getemails(acess_token);
-        System.out.println(response);
+        return service.randomString(10);
+    }
+    @PostMapping("/getAuthToken")
+    public String AuthVar(@Valid @RequestBody AuthorizationToken request) {
+        return service.authcode(request);
+
     }
 }
