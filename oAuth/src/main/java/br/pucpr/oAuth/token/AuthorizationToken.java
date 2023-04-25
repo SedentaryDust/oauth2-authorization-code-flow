@@ -7,5 +7,5 @@ public class AuthorizationToken {
 
     String authcode;
 
-    String challengeString;
+    String code;
 }

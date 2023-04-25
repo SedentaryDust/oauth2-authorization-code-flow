@@ -26,7 +26,6 @@ public class Token_Resource {
 
     @GetMapping("/generate_code")
     public TokenResponseDTO CodeGenerator(){
-
         return service.randomString(10);
     }
     @PostMapping("/getAuthToken")

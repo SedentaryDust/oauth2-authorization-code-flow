@@ -21,6 +21,7 @@ public class TokenService {
 
 
     Hashtable<String  , String> codeState =  new Hashtable<>();
+
     private List<String> code_chalenge = new ArrayList<>();
     private List<String> code_verifier = new ArrayList<>();
     private List<String> state_verifier = new ArrayList<>();
@@ -49,7 +50,7 @@ public class TokenService {
         header.add("Content-Type", "application/json");
         header.add("Accept", "application/json");
 
-        var request_token = new TokenDTO(clientid, secret, credentials.getCode(), "http://localhost:8080/auth");
+        var request_token = new TokenDTO(clientid, secret, credentials.getChallengeString(), "http://localhost:8080/auth");
         var request = new HttpEntity<>(request_token , header);
 
         var response = api.exchange(
@@ -93,11 +94,10 @@ public class TokenService {
     }
 
     public String authrequest(TokenRequest request){
-        var code = request.code;
+        var CS = request.challengeString;
         var state = request.state;
-        String sha256hex = DigestUtils.sha256Hex(code);
 
-        codeState.put(sha256hex , code);
+        code_chalenge.add(CS);
 
 
         return  acessToken;
@@ -105,7 +105,12 @@ public class TokenService {
 
     public String authcode(AuthorizationToken token){
 
-        if(codeState.containsKey(token.getChallengeString())){
+        var code = token.getCode();
+
+        String codeChallenge = DigestUtils.sha256Hex(code);
+
+
+        if(code_chalenge.contains(codeChallenge)){
             return  "AcessToken";
         }
         return null;
