@@ -2,6 +2,7 @@ package br.pucpr.oAuth;
 
 
 import br.pucpr.oAuth.token.AuthorizationToken;
+import br.pucpr.oAuth.token.TokenResponseDTO;
 import br.pucpr.oAuth.token.TokenService;
 import br.pucpr.oAuth.token.TokenRequest;
 import jakarta.validation.Valid;
@@ -24,13 +25,13 @@ public class Token_Resource {
     }
 
     @GetMapping("/generate_code")
-    public String CodeGenerator() throws IOException {
+    public TokenResponseDTO CodeGenerator(){
 
         return service.randomString(10);
     }
     @PostMapping("/getAuthToken")
     public String AuthVar(@Valid @RequestBody AuthorizationToken request) {
-        return service.authcode(request);
-
+        var response = service.authcode(request);
+        return response != null ? response : "codigo invalido";
     }
 }

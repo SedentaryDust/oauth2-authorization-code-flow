@@ -12,21 +12,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 import java.io.FileInputStream;
-import java.util.Properties;
 
 @Service
 public class TokenService {
 
+
+    Hashtable<String  , String> codeState =  new Hashtable<>();
     private List<String> code_chalenge = new ArrayList<>();
     private List<String> code_verifier = new ArrayList<>();
     private List<String> state_verifier = new ArrayList<>();
 
-    private String acess_token = "hey";
+    private String acessToken = "hey";
 
     public static Properties getProp() throws IOException {
         Properties props = new Properties();
@@ -63,14 +62,16 @@ public class TokenService {
         return response.getStatusCode().is2xxSuccessful() ? response.getBody(): null;
     }
 
-    public static String randomString(int length) {
+    public static TokenResponseDTO randomString(int length) {
         String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         StringBuilder output = new StringBuilder();
         for (int i = 0; i < length; i++) {
             int randomIndex = (int) (Math.random() * alphabet.length());
             output.append(alphabet.charAt(randomIndex));
         }
-        return output.toString();
+        String sha256hex = DigestUtils.sha256Hex(output.toString());
+        TokenResponseDTO response = new TokenResponseDTO(output.toString() , sha256hex);
+        return response;
     }
     public String getemails(String token) throws IOException {
         URL url = new URL("https://api.github.com/user/emails");
@@ -78,7 +79,7 @@ public class TokenService {
         httpConn.setRequestMethod("GET");
 
         httpConn.setRequestProperty("Accept", "application/vnd.github+json");
-        httpConn.setRequestProperty("Authorization", "Bearer "+token);
+        httpConn.setRequestProperty("Authorization", "Bearer " + token);
         httpConn.setRequestProperty("X-GitHub-Api-Version", "2022-11-28");
 
         InputStream responseStream = httpConn.getResponseCode() / 100 == 2
@@ -93,16 +94,18 @@ public class TokenService {
 
     public String authrequest(TokenRequest request){
         var code = request.code;
-        code_verifier.add(code);
-        state_verifier.add(request.state);
+        var state = request.state;
         String sha256hex = DigestUtils.sha256Hex(code);
-        code_chalenge.add(sha256hex);
-        System.out.println(sha256hex);
-        return  acess_token;
+
+        codeState.put(sha256hex , code);
+
+
+        return  acessToken;
     }
 
     public String authcode(AuthorizationToken token){
-        if( code_chalenge.contains(token.getChallengeString())){
+
+        if(codeState.containsKey(token.getChallengeString())){
             return  "AcessToken";
         }
         return null;
