@@ -4,9 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor @NoArgsConstructor
+@NoArgsConstructor @AllArgsConstructor
 @Data
-public class Token_Request {
+public class TokenDTO {
+    String client_id;
+    String client_secret;
     String code;
-    String state;
+    String redirect;
+
+
+
+
 }

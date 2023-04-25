@@ -3,14 +3,8 @@ package br.pucpr.oAuth;
 
 import br.pucpr.oAuth.token.AuthorizationToken;
 import br.pucpr.oAuth.token.TokenService;
-import br.pucpr.oAuth.token.Token_Request;
-import br.pucpr.oAuth.token.Token_Response;
+import br.pucpr.oAuth.token.TokenRequest;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -24,7 +18,7 @@ public class Token_Resource {
         this.service = service;
     }
     @PostMapping("/")
-    public String PathVar(@Valid @RequestBody Token_Request request) {
+    public String PathVar(@Valid @RequestBody TokenRequest request) {
         return service.authrequest(request);
 
     }

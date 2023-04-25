@@ -1,10 +1,6 @@
 package br.pucpr.oAuth.token;
 
-import br.pucpr.oAuth.Token_Resource;
-import com.fasterxml.jackson.annotation.JsonAlias;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -21,7 +17,6 @@ import java.util.List;
 import java.util.Scanner;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Properties;
 
 @Service
@@ -41,7 +36,7 @@ public class TokenService {
         return props;
 
     }
-    public Token_Response RequestToken(Token_Request credentials) throws IOException {
+    public TokenResponse RequestToken(TokenRequest credentials) throws IOException {
 
         var api = new RestTemplate();
         var uri = new DefaultUriBuilderFactory().builder()
@@ -55,14 +50,14 @@ public class TokenService {
         header.add("Content-Type", "application/json");
         header.add("Accept", "application/json");
 
-        var request_token = new Token_DTO(clientid, secret, credentials.getCode(), "http://localhost:8080/auth");
+        var request_token = new TokenDTO(clientid, secret, credentials.getCode(), "http://localhost:8080/auth");
         var request = new HttpEntity<>(request_token , header);
 
         var response = api.exchange(
                 uri,
                 HttpMethod.POST,
                 request,
-                Token_Response.class
+                TokenResponse.class
 
         );
         return response.getStatusCode().is2xxSuccessful() ? response.getBody(): null;
@@ -96,7 +91,7 @@ public class TokenService {
 
     }
 
-    public String authrequest(Token_Request request){
+    public String authrequest(TokenRequest request){
         var code = request.code;
         code_verifier.add(code);
         state_verifier.add(request.state);
