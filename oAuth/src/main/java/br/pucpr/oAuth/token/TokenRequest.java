@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor @NoArgsConstructor
 @Data
 public class TokenRequest {
-    String code;
+    String challengeString;
     String state;
 }
